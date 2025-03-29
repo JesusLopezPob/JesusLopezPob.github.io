@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Proyectos</title>
+    <style>
+        /* Variables de colores */
+        :root {
+            --background-light: #ffffff;
+            --text-light: #000000;
+            --background-dark: #121212;
+            --text-dark: #ffffff;
+            --button-light: #0073e6;
+            --button-dark: #444;
+            --card-light: #f9f9f9;
+            --card-dark: #1e1e1e;
+            --highlight-light: #ff5733;
+            --highlight-dark: #ffa500;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        header {
+            text-align: center;
+            padding: 15px;
+            background-color: #0073e6;
+            color: white;
+        }
+
+        .toggle-button {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            background-color: var(--button-light);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+            z-index: 1000;
+        }
+
+        body.dark-mode .toggle-button {
+            background-color: var(--button-dark);
+        }
+
+        .section {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .filters {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .filter-button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+            background-color: #0073e6;
+            color: white;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .filter-button:hover {
+            background-color: #005bb5;
+        }
+
+        body.dark-mode .filter-button {
+            background-color: #444;
+        }
+
+        .projects-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .project-card {
+            position: relative;
+            background-color: var(--card-light);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s;
+        }
+
+        body.dark-mode .project-card {
+            background-color: var(--card-dark);
+        }
+
+        .project-card img {
+            width: 100%;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card h2, .project-card p {
+            margin: 10px 0;
+        }
+
+        .tags {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .project-card:hover .tags {
+            display: block;
+        }
+
+        .project-card .tag {
+            display: inline-block;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 5px;
+            background-color: #0073e6;
+            color: white;
+            margin-right: 5px;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .project-card .tag.highlight {
+            background-color: var(--highlight-light);
+            transform: scale(1.1);
+        }
+
+        body.dark-mode .project-card .tag {
+            background-color: #444;
+        }
+
+        body.dark-mode .project-card .tag.highlight {
+            background-color: var(--highlight-dark);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f1f1f1;
+            margin-top: 40px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode footer {
+            background-color: #1e1e1e;
+            color: white;
+        }
+
+        .tab-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .tab-buttons button {
+            padding: 10px 20px;
+            border: 1px solid #0073e6;
+            background-color: white;
+            color: #0073e6;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .tab-buttons button:hover, .tab-buttons button.active {
+            background-color: #0073e6;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        body.dark-mode .tab-buttons button {
+            background-color: #444;
+            color: white;
+        }
+
+        body.dark-mode .tab-buttons button:hover, body.dark-mode .tab-buttons button.active {
+            background-color: #0073e6;
+            color: white;
+        }
+
+        .tab-buttons {
+            margin-top: 20px;
+        }
+
+        .tab-content h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tab-content p {
+            text-align: center;
+        }
+
+        .project-card .info {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .project-card:hover .info {
+            opacity: 1;
+        }
+
+        .project-card .card-body {
+            display: none;
+        }
+
+        .project-card:hover .card-body {
+            display: block;
+        }
+
+        /* Mejorar el efecto hover */
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .project-card:hover img {
+            transform: scale(1.05);
+        }
+
+    </style>
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Mis Proyectos</h1>
+    </header>
+
+    <button class="toggle-button" onclick="toggleDarkMode()">🌗</button>
+
+    <div class="tab-buttons">
+        <button id="tab-1" class="active" onclick="openTab('bienvenida')">Bienvenida</button>
+        <button id="tab-2" onclick="openTab('trabajos')">Trabajos Destacados</button>
+        <button id="tab-3" onclick="openTab('sobre-mi')">Sobre Mí</button>
+        <button id="tab-4" onclick="openTab('contacto')">Contacto</button>
+    </div>
+
+    <div id="bienvenida" class="tab-content">
+        <section class="section">
+            <h2>Bienvenido a mi Portafolio</h2>
+            <p>Aquí puedes ver mis proyectos en diferentes áreas como robótica, software y diseño CAD.</p>
+        </section>
+        <div class="filters">
+            <button class="filter-button" onclick="filterProjects('all')">Todos</button>
+            <button class="filter-button" onclick="filterProjects('Robótica')">Robótica</button>
+            <button class="filter-button" onclick="filterProjects('Software')">Software</button>
+            <button class="filter-button" onclick="filterProjects('CAD')">CAD</button>
+        </div>
+
+        <div class="projects-container">
+            <div class="project-card" data-category="Robótica Software CAD" onclick="window.location.href='proyecto1.html'">
+                <img src="robot1.jpg" alt="Robot Autónomo">
+                <h2>Robot Autónomo</h2>
+                <div class="card-body">
+                    <p>Un robot que navega de forma autónoma.</p>
+                    <div class="tags">
+                        <span class="tag">Robótica</span>
+                        <span class="tag">Software</span>
+                        <span class="tag">CAD</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="Software CAD" onclick="window.location.href='proyecto2.html'">
+                <img src="software1.jpg" alt="Simulación IA">
+                <h2>Simulación de IA</h2>
+                <div class="card-body">
+                    <p>Software de simulación para IA.</p>
+                    <div class="tags">
+                        <span class="tag">Software</span>
+                        <span class="tag">CAD</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="CAD" onclick="window.location.href='proyecto3.html'">
+                <img src="cad1.jpg" alt="Diseño CAD">
+                <h2>Diseño de Robot</h2>
+                <div class="card-body">
+                    <p>Modelo CAD de un brazo robótico.</p>
+                    <div class="tags">
+                        <span class="tag">CAD</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="Robótica Software" onclick="window.location.href='proyecto4.html'">
+                <img src="robot2.jpg" alt="Brazo robótico">
+                <h2>Brazo Robótico</h2>
+                <div class="card-body">
+                    <p>Un brazo robótico programable.</p>
+                    <div class="tags">
+                        <span class="tag">Robótica</span>
+                        <span class="tag">Software</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section id="trabajos" class="tab-content" style="display: none;">
+        <h2>Trabajos Destacados</h2>
+        <div class="image-gallery">
+            <img src="imagen1.jpg" alt="Imagen 1">
+            <img src="imagen2.jpg" alt="Imagen 2">
+            <img src="imagen3.jpg" alt="Imagen 3">
+        </div>
+    </section>
+
+    <section id="sobre-mi" class="tab-content" style="display: none;">
+        <h2>Sobre Mí</h2>
+        <p>Apasionado por la robótica, el software y el diseño CAD. Me encanta desarrollar proyectos innovadores.</p>
+    </section>
+
+    <section id="contacto" class="tab-content" style="display: none;">
+        <h2>Contacto</h2>
+        <p>Correo</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 - Mi Página Web</p>
+    </footer>
+
+    
+
+<script src="assets/js/scripts.js"></script>
+</body>
+</html>
